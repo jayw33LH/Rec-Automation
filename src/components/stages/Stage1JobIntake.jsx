@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import { parseFile } from '../../utils/fileParser';
 import OutputBlock from '../shared/OutputBlock';
@@ -26,12 +26,20 @@ CV Feedback & Interview Feedback agreed SLAs:
 As soon as you respond confirming the above, we will begin the search.
 Best,`;
 
-export default function Stage1JobIntake({ jobDescription, onJobDescriptionChange }) {
+export default function Stage1JobIntake({ role, onRoleUpdate, onCreateRole }) {
   const [pasteInput, setPasteInput] = useState('');
   const [fileError, setFileError] = useState(null);
   const [isParsing, setIsParsing] = useState(false);
+  const [roleName, setRoleName] = useState('');
   const fileRef = useRef(null);
   const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
+
+  // Sync local state when active role changes
+  useEffect(() => {
+    setPasteInput(role?.jd || '');
+    setRoleName(role?.name || '');
+    setOutput('');
+  }, [role?.id]);
 
   const handleFileUpload = async e => {
     const file = e.target.files?.[0];
@@ -53,7 +61,12 @@ export default function Stage1JobIntake({ jobDescription, onJobDescriptionChange
     const jd = pasteInput.trim();
     if (!jd) return;
 
-    onJobDescriptionChange(jd);
+    // Save JD and name to active role (create one if none exists)
+    if (!role) {
+      onCreateRole();
+    }
+    const name = roleName.trim() || 'New Role';
+    onRoleUpdate({ jd, name });
 
     await generate([
       {
@@ -73,17 +86,31 @@ ${TEMPLATE}`,
     ]);
   };
 
-  const displayOutput = output || '';
-
   return (
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold text-gray-900 mb-1">Job Intake</h1>
       <p className="text-sm text-gray-500 mb-6">
-        Paste or upload a job description. Claude will auto-populate the confirmation email template.
-        The JD is saved in memory for all subsequent stages.
+        Paste or upload a JD. Claude auto-populates the confirmation email template.
+        The JD is saved to the active role and used across all stages.
       </p>
 
       <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Role name
+          </label>
+          <input
+            value={roleName}
+            onChange={e => {
+              setRoleName(e.target.value);
+              onRoleUpdate({ name: e.target.value });
+            }}
+            placeholder="e.g. VP of Engineering — Fintech Co"
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
+              focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+          />
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
             Job Description
@@ -107,16 +134,8 @@ ${TEMPLATE}`,
           >
             {isParsing ? 'Parsing file...' : 'Upload PDF / DOCX'}
           </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".pdf,.doc,.docx,.txt"
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-          {fileError && (
-            <span className="text-sm text-red-600">{fileError}</span>
-          )}
+          <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.txt" onChange={handleFileUpload} className="hidden" />
+          {fileError && <span className="text-sm text-red-600">{fileError}</span>}
         </div>
 
         <button
@@ -132,7 +151,7 @@ ${TEMPLATE}`,
 
       <OutputBlock
         label="Confirmation Email — edit as needed"
-        value={displayOutput}
+        value={output}
         onChange={setOutput}
         isLoading={isLoading}
         error={error}

@@ -1,32 +1,23 @@
-import { useState } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
 
 export default function Stage4OutreachGenerator({ jobDescription }) {
-  const [firstName, setFirstName] = useState('');
-  const [currentTitle, setCurrentTitle] = useState('');
-  const [background, setBackground] = useState('');
   const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
 
   const handleGenerate = async () => {
-    if (!firstName.trim() || !jobDescription) return;
+    if (!jobDescription) return;
 
     await generate([
       {
         role: 'user',
-        content: `You are writing a direct, peer-to-peer outreach message for a recruiting engagement. Follow the template structure and rules exactly.
-
-CANDIDATE DETAILS:
-- First name: ${firstName.trim()}
-- Current title: ${currentTitle.trim() || 'unknown'}
-- Notable background detail: ${background.trim() || 'none provided'}
+        content: `You are writing a universal outreach message for a recruiting engagement. This message will be sent to multiple candidates — use [First Name] as the opening placeholder. Follow the template structure and rules exactly.
 
 JOB DESCRIPTION:
 ${jobDescription}
 
 OUTPUT the outreach message using this EXACT structure:
 
-[First name] - I'm recruiting for a [role title] within [describe the company anonymously — use a descriptor like "a global financial institution" or "a major technology firm" — NEVER name the company], [one sentence on where the role sits and what it is centered on].
+[First Name] - I'm recruiting for a [role title] within [describe the company anonymously — use a descriptor like "a global financial institution" or "a major technology firm" — NEVER name the company], [one sentence on where the role sits and what it is centered on].
 
 [One paragraph: what this role is about at a higher level — the mandate, what is being built or transformed, what makes it interesting. No fluff. Specific and grounded in the actual JD.]
 
@@ -54,7 +45,7 @@ Jason Wolpow
 
 RULES — follow every one:
 - NEVER name the hiring company. Use a descriptor only.
-- Open with the first name followed by a dash. No "Hi", no "Dear", nothing before the name.
+- Open with [First Name] followed by a dash. No "Hi", no "Dear", nothing before the placeholder.
 - The two body paragraphs must be distinct — first sets context and role, second adds stakes, mandate, or what makes it worth their time.
 - Bullets must be concise and specific — pulled directly from JD language, not rephrased into vague generalities.
 - No em dashes anywhere. Use commas or sentence breaks instead.
@@ -68,7 +59,8 @@ RULES — follow every one:
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold text-gray-900 mb-1">Outreach Generator</h1>
       <p className="text-sm text-gray-500 mb-6">
-        Generate a personalized, peer-to-peer outreach message anchored to the stored JD.
+        Generates a single outreach template anchored to the active role's JD.
+        Copy it, swap in the first name, and send to anyone on your list.
       </p>
 
       {!jobDescription && (
@@ -77,60 +69,18 @@ RULES — follow every one:
         </div>
       )}
 
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Candidate first name <span className="text-red-500">*</span>
-            </label>
-            <input
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
-              placeholder="e.g. Sarah"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Current title
-            </label>
-            <input
-              value={currentTitle}
-              onChange={e => setCurrentTitle(e.target.value)}
-              placeholder="e.g. VP of Product"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Notable background detail (optional)
-          </label>
-          <input
-            value={background}
-            onChange={e => setBackground(e.target.value)}
-            placeholder="e.g. previously built payments infra at Stripe"
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
-          />
-        </div>
-
-        <button
-          onClick={handleGenerate}
-          disabled={isLoading || !firstName.trim() || !jobDescription}
-          className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-            hover:bg-blue-700 active:bg-blue-800 transition-colors
-            disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoading ? 'Generating...' : 'Generate Outreach Message'}
-        </button>
-      </div>
+      <button
+        onClick={handleGenerate}
+        disabled={isLoading || !jobDescription}
+        className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
+          hover:bg-blue-700 active:bg-blue-800 transition-colors
+          disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isLoading ? 'Generating...' : 'Generate Outreach Template'}
+      </button>
 
       <OutputBlock
-        label="Outreach message — edit as needed"
+        label="Outreach template — replace [First Name] before sending"
         value={output}
         onChange={setOutput}
         isLoading={isLoading}

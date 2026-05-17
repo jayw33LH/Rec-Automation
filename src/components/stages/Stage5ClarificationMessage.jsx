@@ -4,28 +4,32 @@ import OutputBlock from '../shared/OutputBlock';
 
 export default function Stage5ClarificationMessage({ jobDescription }) {
   const [candidateName, setCandidateName] = useState('');
-  const [relevantDetail, setRelevantDetail] = useState('');
-  const [gap, setGap] = useState('');
+  const [candidateInfo, setCandidateInfo] = useState('');
   const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
 
   const handleGenerate = async () => {
-    if (!candidateName.trim() || !relevantDetail.trim() || !gap.trim()) return;
+    if (!candidateInfo.trim() || !jobDescription) return;
 
     await generate([
       {
         role: 'user',
-        content: `You are writing a pre-call clarification message to a candidate you're unsure about. It should be respectful, direct, and under 200 words.
+        content: `You are a recruiting specialist. Analyze the candidate below against the job description. Identify what made them interesting enough to reach out to, and what the specific gap or concern is that's making you hesitant. Then write a direct pre-call clarification message.
 
-CANDIDATE: ${candidateName.trim()}
-WHAT WAS RELEVANT ABOUT THEIR PROFILE: ${relevantDetail.trim()}
-THE SPECIFIC CONCERN OR GAP: ${gap.trim()}
+CANDIDATE NAME: ${candidateName.trim() || 'the candidate'}
 
-JOB DESCRIPTION (for context):
-${jobDescription || 'Not provided'}
+CANDIDATE PROFILE / BACKGROUND INFO:
+${candidateInfo.trim()}
 
-Output the message using this EXACT structure:
+JOB DESCRIPTION:
+${jobDescription}
 
-Hi [Name] - really appreciate you responding and I want to be respectful of your time before we jump on a call, especially since I came to you.
+First, analyze silently:
+- What on their profile is genuinely relevant to this role?
+- What is the specific gap or mismatch — name it precisely, don't hedge?
+
+Then output ONLY the message using this EXACT structure:
+
+Hi [name] - really appreciate you responding and I want to be respectful of your time before we jump on a call, especially since I came to you.
 
 The reason I reached out was [1-2 sentences on what specifically on their profile was relevant — their background, companies, domain experience. Be specific, not generic].
 
@@ -40,7 +44,7 @@ RULES:
 - The gap must be named specifically, not hedged vaguely.
 - The closing must be exactly one question, not a list.
 - Total message must be under 200 words.
-- Output ONLY the message. Nothing else.`,
+- Output ONLY the message. No preamble, no analysis, nothing else.`,
       },
     ]);
   };
@@ -49,13 +53,20 @@ RULES:
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold text-gray-900 mb-1">Clarification Message</h1>
       <p className="text-sm text-gray-500 mb-6">
-        For MAYBE candidates before booking a call. Names the gap directly and asks a single gut-check question.
+        Paste a candidate's LinkedIn profile or background info. Claude reads it against the JD,
+        identifies the gap, and writes the pre-call message automatically.
       </p>
+
+      {!jobDescription && (
+        <div className="mb-6 px-4 py-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+          Complete Stage 1 first to load a job description.
+        </div>
+      )}
 
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Candidate name <span className="text-red-500">*</span>
+            Candidate name (optional)
           </label>
           <input
             value={candidateName}
@@ -68,27 +79,13 @@ RULES:
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            What was relevant about their profile that prompted outreach <span className="text-red-500">*</span>
+            Candidate profile or background info <span className="text-red-500">*</span>
           </label>
           <textarea
-            value={relevantDetail}
-            onChange={e => setRelevantDetail(e.target.value)}
-            placeholder="e.g. 6 years in enterprise SaaS sales, previously at Salesforce and Workday, strong mid-market AE background"
-            rows={3}
-            className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            The specific concern or gap <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            value={gap}
-            onChange={e => setGap(e.target.value)}
-            placeholder="e.g. the role requires enterprise deal cycles of $500K+, but all visible experience is mid-market. No evidence of strategic account management at that scale."
-            rows={3}
+            value={candidateInfo}
+            onChange={e => setCandidateInfo(e.target.value)}
+            placeholder="Paste their LinkedIn profile, headline, experience summary, or any background info you have..."
+            rows={8}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
               resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
           />
@@ -96,12 +93,12 @@ RULES:
 
         <button
           onClick={handleGenerate}
-          disabled={isLoading || !candidateName.trim() || !relevantDetail.trim() || !gap.trim()}
+          disabled={isLoading || !candidateInfo.trim() || !jobDescription}
           className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
             hover:bg-blue-700 active:bg-blue-800 transition-colors
             disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Generating...' : 'Generate Clarification Message'}
+          {isLoading ? 'Analyzing & generating...' : 'Analyze & Generate Message'}
         </button>
       </div>
 
