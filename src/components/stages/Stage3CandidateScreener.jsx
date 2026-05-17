@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import CopyButton from '../shared/CopyButton';
 import LoadingDots from '../shared/LoadingDots';
+import RefinementBox from '../shared/RefinementBox';
 
 function parseScreeningRows(raw) {
   const rows = [];
@@ -193,6 +194,11 @@ Rules:
           </div>
         </div>
       )}
+
+      <RefinementBox
+        currentOutput={results.length ? formatResultsAsText(results) : ''}
+        onRefined={text => setResults(parseScreeningRows(text))}
+      />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
+import RefinementBox from '../shared/RefinementBox';
 
 export default function Stage4OutreachGenerator({ jobDescription }) {
   const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
@@ -87,6 +88,7 @@ RULES — follow every one:
         error={error}
         rows={22}
       />
+      <RefinementBox currentOutput={output} onRefined={setOutput} />
     </div>
   );
 }

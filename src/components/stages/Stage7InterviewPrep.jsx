@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
+import RefinementBox from '../shared/RefinementBox';
 import { MAX_TOKENS_LONG } from '../../anthropic';
 
 export default function Stage7InterviewPrep({ jobDescription }) {
@@ -241,6 +242,7 @@ RULES:
         error={error}
         rows={32}
       />
+      <RefinementBox currentOutput={output} onRefined={setOutput} maxTokens={MAX_TOKENS_LONG} />
     </div>
   );
 }

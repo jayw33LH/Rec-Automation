@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
+import RefinementBox from '../shared/RefinementBox';
 
 export default function Stage6CandidateWriteup({ jobDescription }) {
   const [name, setName] = useState('');
@@ -162,6 +163,7 @@ RULES:
         error={error}
         rows={14}
       />
+      <RefinementBox currentOutput={output} onRefined={setOutput} />
     </div>
   );
 }

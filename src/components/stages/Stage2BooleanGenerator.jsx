@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createClient, MODEL, MAX_TOKENS } from '../../anthropic';
 import CopyButton from '../shared/CopyButton';
 import LoadingDots from '../shared/LoadingDots';
+import RefinementBox from '../shared/RefinementBox';
 
 const LABELS = [
   'Title Search 1',
@@ -169,6 +170,15 @@ ${jobDescription}`,
           })}
         </div>
       )}
+
+      <RefinementBox
+        currentOutput={
+          Object.keys(strings).length
+            ? LABELS.map(l => `${l}:\n${strings[l] || ''}`).join('\n\n')
+            : ''
+        }
+        onRefined={text => setStrings(parseBooleans(text))}
+      />
     </div>
   );
 }

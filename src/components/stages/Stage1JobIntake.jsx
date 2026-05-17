@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import { parseFile } from '../../utils/fileParser';
 import OutputBlock from '../shared/OutputBlock';
+import RefinementBox from '../shared/RefinementBox';
 
 const TEMPLATE = `Hi,
 
@@ -157,6 +158,7 @@ ${TEMPLATE}`,
         error={error}
         rows={24}
       />
+      <RefinementBox currentOutput={output} onRefined={setOutput} />
     </div>
   );
 }
