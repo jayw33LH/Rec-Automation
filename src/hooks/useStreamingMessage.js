@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { client, MODEL, MAX_TOKENS } from '../anthropic';
+import { createClient, MODEL, MAX_TOKENS } from '../anthropic';
 
 export function useStreamingMessage(maxTokens = MAX_TOKENS) {
   const [output, setOutput] = useState('');
@@ -16,7 +16,7 @@ export function useStreamingMessage(maxTokens = MAX_TOKENS) {
       setError(null);
 
       try {
-        const stream = client.messages.stream({
+        const stream = createClient().messages.stream({
           model: MODEL,
           max_tokens: maxTokens,
           messages,

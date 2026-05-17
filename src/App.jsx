@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Sidebar from './components/Sidebar';
+import ApiKeyGate from './components/ApiKeyGate';
 import Stage1JobIntake from './components/stages/Stage1JobIntake';
 import Stage2BooleanGenerator from './components/stages/Stage2BooleanGenerator';
 import Stage3CandidateScreener from './components/stages/Stage3CandidateScreener';
@@ -41,6 +42,7 @@ export default function App() {
   };
 
   return (
+    <ApiKeyGate>
     <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar
         activeStage={activeStage}
@@ -53,5 +55,6 @@ export default function App() {
         </div>
       </main>
     </div>
+    </ApiKeyGate>
   );
 }

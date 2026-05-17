@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { client, MODEL, MAX_TOKENS } from '../../anthropic';
+import { createClient, MODEL, MAX_TOKENS } from '../../anthropic';
 import CopyButton from '../shared/CopyButton';
 import LoadingDots from '../shared/LoadingDots';
 
@@ -56,7 +56,7 @@ export default function Stage2BooleanGenerator({ jobDescription }) {
     setStreamingRaw('');
 
     try {
-      const stream = client.messages.stream({
+      const stream = createClient().messages.stream({
         model: MODEL,
         max_tokens: MAX_TOKENS,
         messages: [
