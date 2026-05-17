@@ -3,6 +3,7 @@ import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import CopyButton from '../shared/CopyButton';
 import LoadingDots from '../shared/LoadingDots';
 import RefinementBox from '../shared/RefinementBox';
+import { useDebouncedSave } from '../../hooks/useDebouncedSave';
 
 function parseScreeningRows(raw) {
   const rows = [];
@@ -34,10 +35,12 @@ function formatResultsAsText(rows) {
   return [header, separator, ...dataRows].join('\n');
 }
 
-export default function Stage3CandidateScreener({ jobDescription }) {
+export default function Stage3CandidateScreener({ jobDescription, savedData, onSave }) {
   const [candidateInput, setCandidateInput] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(savedData?.results || []);
   const { output, isLoading, error, generate } = useStreamingMessage();
+
+  useDebouncedSave(results, (val) => { if (val.length) onSave({ results: val }); });
 
   const handleScreen = async () => {
     if (!candidateInput.trim() || !jobDescription) return;

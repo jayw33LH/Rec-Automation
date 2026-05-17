@@ -42,11 +42,32 @@ export default function App() {
     });
   }, [activeRoleId]);
 
+  // Deep-merge stageData for the active role
+  const saveStageData = useCallback((stageId, data) => {
+    if (!activeRoleId) return;
+    setRoles(prev => {
+      const next = prev.map(r => {
+        if (r.id !== activeRoleId) return r;
+        return {
+          ...r,
+          stageData: {
+            ...(r.stageData || {}),
+            [stageId]: {
+              ...(r.stageData?.[stageId] || {}),
+              ...data,
+            },
+          },
+        };
+      });
+      persistRoles(next);
+      return next;
+    });
+  }, [activeRoleId]);
+
   const createRole = useCallback(() => {
     const id = Date.now().toString();
-    const name = `New Role`;
     setRoles(prev => {
-      const next = [...prev, { id, name, jd: '' }];
+      const next = [...prev, { id, name: 'New Role', jd: '', stageData: {} }];
       persistRoles(next);
       return next;
     });
@@ -73,24 +94,79 @@ export default function App() {
     });
   }, [activeRoleId]);
 
+  const sd = (stageId) => activeRole?.stageData?.[stageId] || {};
+
   const renderStage = () => {
-    const stageProps = { jobDescription };
+    // key={activeRoleId} forces a full remount when role switches,
+    // so each stage re-initialises its local state from savedData.
     switch (activeStage) {
       case 1:
         return (
           <Stage1JobIntake
+            key={activeRoleId}
             role={activeRole}
+            savedData={sd(1)}
             onRoleUpdate={updateActiveRole}
             onCreateRole={createRole}
+            onSave={(data) => saveStageData(1, data)}
           />
         );
-      case 2: return <Stage2BooleanGenerator {...stageProps} />;
-      case 3: return <Stage3CandidateScreener {...stageProps} />;
-      case 4: return <Stage4OutreachGenerator {...stageProps} />;
-      case 5: return <Stage5ClarificationMessage {...stageProps} />;
-      case 6: return <Stage6CandidateWriteup {...stageProps} />;
-      case 7: return <Stage7InterviewPrep {...stageProps} />;
-      default: return null;
+      case 2:
+        return (
+          <Stage2BooleanGenerator
+            key={activeRoleId}
+            jobDescription={jobDescription}
+            savedData={sd(2)}
+            onSave={(data) => saveStageData(2, data)}
+          />
+        );
+      case 3:
+        return (
+          <Stage3CandidateScreener
+            key={activeRoleId}
+            jobDescription={jobDescription}
+            savedData={sd(3)}
+            onSave={(data) => saveStageData(3, data)}
+          />
+        );
+      case 4:
+        return (
+          <Stage4OutreachGenerator
+            key={activeRoleId}
+            jobDescription={jobDescription}
+            savedData={sd(4)}
+            onSave={(data) => saveStageData(4, data)}
+          />
+        );
+      case 5:
+        return (
+          <Stage5ClarificationMessage
+            key={activeRoleId}
+            jobDescription={jobDescription}
+            savedData={sd(5)}
+            onSave={(data) => saveStageData(5, data)}
+          />
+        );
+      case 6:
+        return (
+          <Stage6CandidateWriteup
+            key={activeRoleId}
+            jobDescription={jobDescription}
+            savedData={sd(6)}
+            onSave={(data) => saveStageData(6, data)}
+          />
+        );
+      case 7:
+        return (
+          <Stage7InterviewPrep
+            key={activeRoleId}
+            jobDescription={jobDescription}
+            savedData={sd(7)}
+            onSave={(data) => saveStageData(7, data)}
+          />
+        );
+      default:
+        return null;
     }
   };
 

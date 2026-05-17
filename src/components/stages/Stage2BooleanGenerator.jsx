@@ -3,6 +3,7 @@ import { createClient, MODEL, MAX_TOKENS } from '../../anthropic';
 import CopyButton from '../shared/CopyButton';
 import LoadingDots from '../shared/LoadingDots';
 import RefinementBox from '../shared/RefinementBox';
+import { useDebouncedSave } from '../../hooks/useDebouncedSave';
 
 const LABELS = [
   'Title Search 1',
@@ -37,8 +38,8 @@ function parseBooleans(raw) {
   return results;
 }
 
-export default function Stage2BooleanGenerator({ jobDescription }) {
-  const [strings, setStrings] = useState({});
+export default function Stage2BooleanGenerator({ jobDescription, savedData, onSave }) {
+  const [strings, setStrings] = useState(savedData?.strings || {});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [streamingRaw, setStreamingRaw] = useState('');
@@ -48,6 +49,8 @@ export default function Stage2BooleanGenerator({ jobDescription }) {
       setStrings(parseBooleans(streamingRaw));
     }
   }, [streamingRaw]);
+
+  useDebouncedSave(strings, (val) => { if (Object.keys(val).length) onSave({ strings: val }); });
 
   const handleGenerate = async () => {
     if (!jobDescription) return;

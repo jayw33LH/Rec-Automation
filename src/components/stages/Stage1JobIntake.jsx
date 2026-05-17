@@ -3,6 +3,7 @@ import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import { parseFile } from '../../utils/fileParser';
 import OutputBlock from '../shared/OutputBlock';
 import RefinementBox from '../shared/RefinementBox';
+import { useDebouncedSave } from '../../hooks/useDebouncedSave';
 
 const TEMPLATE = `Hi,
 
@@ -27,20 +28,16 @@ CV Feedback & Interview Feedback agreed SLAs:
 As soon as you respond confirming the above, we will begin the search.
 Best,`;
 
-export default function Stage1JobIntake({ role, onRoleUpdate, onCreateRole }) {
-  const [pasteInput, setPasteInput] = useState('');
+export default function Stage1JobIntake({ role, savedData, onRoleUpdate, onCreateRole, onSave }) {
+  // Component is remounted on role switch (key=activeRoleId), so initialise directly from props
+  const [pasteInput, setPasteInput] = useState(role?.jd || '');
   const [fileError, setFileError] = useState(null);
   const [isParsing, setIsParsing] = useState(false);
-  const [roleName, setRoleName] = useState('');
+  const [roleName, setRoleName] = useState(role?.name || '');
   const fileRef = useRef(null);
-  const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
+  const { output, setOutput, isLoading, error, generate } = useStreamingMessage(undefined, savedData?.output || '');
 
-  // Sync local state when active role changes
-  useEffect(() => {
-    setPasteInput(role?.jd || '');
-    setRoleName(role?.name || '');
-    setOutput('');
-  }, [role?.id]);
+  useDebouncedSave(output, (val) => onSave({ output: val }));
 
   const handleFileUpload = async e => {
     const file = e.target.files?.[0];

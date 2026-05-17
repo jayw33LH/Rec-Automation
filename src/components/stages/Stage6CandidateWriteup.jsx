@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
 import RefinementBox from '../shared/RefinementBox';
+import { useDebouncedSave } from '../../hooks/useDebouncedSave';
 
-export default function Stage6CandidateWriteup({ jobDescription }) {
+export default function Stage6CandidateWriteup({ jobDescription, savedData, onSave }) {
   const [name, setName] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentCompany, setCurrentCompany] = useState('');
   const [citizenship, setCitizenship] = useState('');
   const [comp, setComp] = useState('');
   const [notes, setNotes] = useState('');
-  const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
+  const { output, setOutput, isLoading, error, generate } = useStreamingMessage(undefined, savedData?.output || '');
+  useDebouncedSave(output, (val) => onSave({ output: val }));
 
   const handleGenerate = async () => {
     if (!name.trim() || !notes.trim()) return;

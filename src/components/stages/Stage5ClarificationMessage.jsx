@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
 import RefinementBox from '../shared/RefinementBox';
+import { useDebouncedSave } from '../../hooks/useDebouncedSave';
 
-export default function Stage5ClarificationMessage({ jobDescription }) {
+export default function Stage5ClarificationMessage({ jobDescription, savedData, onSave }) {
   const [candidateName, setCandidateName] = useState('');
   const [candidateInfo, setCandidateInfo] = useState('');
-  const { output, setOutput, isLoading, error, generate } = useStreamingMessage();
+  const { output, setOutput, isLoading, error, generate } = useStreamingMessage(undefined, savedData?.output || '');
+  useDebouncedSave(output, (val) => onSave({ output: val }));
 
   const handleGenerate = async () => {
     if (!candidateInfo.trim() || !jobDescription) return;

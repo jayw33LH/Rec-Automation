@@ -3,8 +3,9 @@ import { useStreamingMessage } from '../../hooks/useStreamingMessage';
 import OutputBlock from '../shared/OutputBlock';
 import RefinementBox from '../shared/RefinementBox';
 import { MAX_TOKENS_LONG } from '../../anthropic';
+import { useDebouncedSave } from '../../hooks/useDebouncedSave';
 
-export default function Stage7InterviewPrep({ jobDescription }) {
+export default function Stage7InterviewPrep({ jobDescription, savedData, onSave }) {
   const [resume, setResume] = useState('');
   const [jdOverride, setJdOverride] = useState('');
   const [hmLinkedIn, setHmLinkedIn] = useState('');
@@ -14,7 +15,8 @@ export default function Stage7InterviewPrep({ jobDescription }) {
   const [aboutPage, setAboutPage] = useState('');
   const [compExpectation, setCompExpectation] = useState('');
   const [logistics, setLogistics] = useState('');
-  const { output, setOutput, isLoading, error, generate } = useStreamingMessage(MAX_TOKENS_LONG);
+  const { output, setOutput, isLoading, error, generate } = useStreamingMessage(MAX_TOKENS_LONG, savedData?.output || '');
+  useDebouncedSave(output, (val) => onSave({ output: val }));
 
   const effectiveJD = jdOverride.trim() || jobDescription || '';
 

@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef } from 'react';
 import { createClient, MODEL, MAX_TOKENS } from '../anthropic';
 
-export function useStreamingMessage(maxTokens = MAX_TOKENS) {
-  const [output, setOutput] = useState('');
+export function useStreamingMessage(maxTokens = MAX_TOKENS, initialValue = '') {
+  const [output, setOutput] = useState(initialValue);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const isMountedRef = useRef(true);
