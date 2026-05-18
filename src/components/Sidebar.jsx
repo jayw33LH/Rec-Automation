@@ -135,8 +135,8 @@ export default function Sidebar({ activeStage, onStageChange, hasJD, roles, acti
                   ${isActive
                     ? 'bg-lh-900/80 text-white border-l-2 border-lh-500'
                     : needsJD
-                    ? 'text-lh-800 hover:bg-lh-900/30 border-l-2 border-transparent'
-                    : 'text-lh-400 hover:bg-lh-900/50 hover:text-lh-200 border-l-2 border-transparent'
+                    ? 'text-white/30 hover:bg-lh-900/30 border-l-2 border-transparent'
+                    : 'text-white hover:bg-lh-900/50 border-l-2 border-transparent'
                   }`}
               >
                 <span className={`w-6 h-6 rounded flex items-center justify-center text-xs font-mono font-bold flex-shrink-0
