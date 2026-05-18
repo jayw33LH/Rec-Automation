@@ -127,8 +127,8 @@ ${jobDescription}`,
       <button
         onClick={handleGenerate}
         disabled={isLoading || !jobDescription}
-        className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-          hover:bg-blue-700 active:bg-blue-800 transition-colors
+        className="px-5 py-2.5 rounded-lg bg-lh-600 text-white text-sm font-medium
+          hover:bg-lh-700 active:bg-lh-800 transition-colors
           disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? 'Generating...' : 'Generate Boolean Strings'}
@@ -162,9 +162,9 @@ ${jobDescription}`,
                   rows={3}
                   placeholder={isStreaming ? 'Generating...' : ''}
                   className={`w-full px-3 py-2.5 rounded-lg border text-sm font-mono leading-relaxed resize-y
-                    focus:outline-none focus:ring-2 focus:ring-blue-500/30
+                    focus:outline-none focus:ring-2 focus:ring-lh-500/30
                     ${isStreaming
-                      ? 'border-blue-200 bg-blue-50/30 text-gray-600'
+                      ? 'border-lh-200 bg-lh-50/20 text-gray-600'
                       : 'border-gray-200 bg-white text-gray-800 hover:border-gray-300'
                     }`}
                 />

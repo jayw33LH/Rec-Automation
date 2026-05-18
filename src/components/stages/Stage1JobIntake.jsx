@@ -105,7 +105,7 @@ ${TEMPLATE}`,
             }}
             placeholder="e.g. VP of Engineering — Fintech Co"
             className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -119,7 +119,7 @@ ${TEMPLATE}`,
             placeholder="Paste job description here..."
             rows={8}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -128,7 +128,7 @@ ${TEMPLATE}`,
             onClick={() => fileRef.current?.click()}
             disabled={isParsing}
             className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700
-              hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:opacity-50"
+              hover:bg-gray-50 hover:border-lh-300/60 transition-colors disabled:opacity-50"
           >
             {isParsing ? 'Parsing file...' : 'Upload PDF / DOCX'}
           </button>
@@ -139,8 +139,8 @@ ${TEMPLATE}`,
         <button
           onClick={handleGenerate}
           disabled={isLoading || !pasteInput.trim()}
-          className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-            hover:bg-blue-700 active:bg-blue-800 transition-colors
+          className="px-5 py-2.5 rounded-lg bg-lh-600 text-white text-sm font-medium
+            hover:bg-lh-700 active:bg-lh-800 transition-colors
             disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Generating...' : 'Parse JD & Generate Email'}

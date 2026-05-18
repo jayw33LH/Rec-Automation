@@ -76,7 +76,7 @@ RULES:
             onChange={e => setCandidateName(e.target.value)}
             placeholder="e.g. Marcus"
             className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -90,15 +90,15 @@ RULES:
             placeholder="Paste their LinkedIn profile, headline, experience summary, or any background info you have..."
             rows={8}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
         <button
           onClick={handleGenerate}
           disabled={isLoading || !candidateInfo.trim() || !jobDescription}
-          className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-            hover:bg-blue-700 active:bg-blue-800 transition-colors
+          className="px-5 py-2.5 rounded-lg bg-lh-600 text-white text-sm font-medium
+            hover:bg-lh-700 active:bg-lh-800 transition-colors
             disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Analyzing & generating...' : 'Analyze & Generate Message'}

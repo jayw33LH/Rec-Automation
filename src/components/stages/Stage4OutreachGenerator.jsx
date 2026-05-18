@@ -75,8 +75,8 @@ RULES — follow every one:
       <button
         onClick={handleGenerate}
         disabled={isLoading || !jobDescription}
-        className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-          hover:bg-blue-700 active:bg-blue-800 transition-colors
+        className="px-5 py-2.5 rounded-lg bg-lh-600 text-white text-sm font-medium
+          hover:bg-lh-700 active:bg-lh-800 transition-colors
           disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? 'Generating...' : 'Generate Outreach Template'}

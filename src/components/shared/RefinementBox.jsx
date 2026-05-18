@@ -57,32 +57,34 @@ Output ONLY the revised content. Keep exactly the same format and structure as t
   return (
     <div className="mt-8 pt-6 border-t border-gray-100">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-sm font-medium text-gray-700">Refine this output</span>
+        <span className="text-xs font-mono font-medium text-lh-500 uppercase tracking-widest">
+          Refine output
+        </span>
         {isRefining && <LoadingDots />}
       </div>
       <textarea
         value={feedback}
         onChange={e => { setFeedback(e.target.value); setError(null); }}
         onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleRefine(); }}
-        placeholder="Describe what's off — Claude will revise the output above based on your notes..."
+        placeholder="Describe what's off — Claude will revise the output above..."
         rows={3}
         disabled={isRefining}
-        className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-          resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300
-          disabled:opacity-50 disabled:bg-gray-50"
+        className="w-full px-3 py-2.5 rounded border border-gray-200 text-sm leading-relaxed
+          resize-y focus:outline-none focus:ring-1 focus:ring-lh-500/30 focus:border-lh-400/50
+          hover:border-lh-300/50 disabled:opacity-50 disabled:bg-gray-50 transition-colors"
       />
-      {error && <p className="text-sm text-red-600 mt-1.5">{error}</p>}
+      {error && <p className="text-sm text-red-500 mt-1.5 font-mono">{error}</p>}
       <div className="flex items-center gap-3 mt-2">
         <button
           onClick={handleRefine}
           disabled={!feedback.trim() || isRefining}
-          className="px-4 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium
-            hover:bg-slate-700 active:bg-slate-900 transition-colors
-            disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded bg-lh-950 text-white text-sm font-medium
+            hover:bg-lh-900 border border-lh-800 hover:border-lh-600 transition-colors
+            disabled:opacity-40 disabled:cursor-not-allowed tracking-wide"
         >
           {isRefining ? 'Refining...' : 'Refine'}
         </button>
-        <span className="text-xs text-gray-400">or Cmd+Enter</span>
+        <span className="text-xs text-gray-400 font-mono">or ⌘+Enter</span>
       </div>
     </div>
   );

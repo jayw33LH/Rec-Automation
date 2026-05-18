@@ -183,8 +183,8 @@ export default function App() {
           onCreateRole={createRole}
           onDeleteRole={deleteRole}
         />
-        <main className="flex-1 overflow-y-auto">
-          <div className="min-h-full px-10 py-10">
+        <main className="flex-1 overflow-y-auto bg-grid">
+          <div className="min-h-full px-10 py-10 bg-white/80 backdrop-blur-[1px]">
             {renderStage()}
           </div>
         </main>

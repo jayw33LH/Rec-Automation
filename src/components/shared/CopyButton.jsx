@@ -14,13 +14,13 @@ export default function CopyButton({ getText, className = '' }) {
   return (
     <button
       onClick={handleCopy}
-      className={`px-3 py-1.5 text-sm rounded-md border transition-all duration-150
+      className={`px-3 py-1.5 text-xs font-mono rounded border transition-all duration-150 tracking-wide
         ${copied
-          ? 'bg-green-50 border-green-300 text-green-700'
-          : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'
+          ? 'bg-lh-500/10 border-lh-500/50 text-lh-400'
+          : 'bg-transparent border-lh-800 text-lh-500 hover:border-lh-500 hover:text-lh-300 hover:bg-lh-900/30'
         } ${className}`}
     >
-      {copied ? 'Copied!' : 'Copy'}
+      {copied ? '✓ Copied' : 'Copy'}
     </button>
   );
 }

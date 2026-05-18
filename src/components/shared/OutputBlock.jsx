@@ -7,7 +7,7 @@ export default function OutputBlock({ label, value, onChange, isLoading, error, 
   return (
     <div className="mt-6 space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
+        <span className="text-xs font-mono font-medium text-lh-500 uppercase tracking-widest flex items-center gap-2">
           {label}
           {isLoading && <LoadingDots />}
         </span>
@@ -15,7 +15,7 @@ export default function OutputBlock({ label, value, onChange, isLoading, error, 
       </div>
 
       {error ? (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="p-3 rounded border border-red-800/50 bg-red-950/30 text-red-400 text-sm font-mono">
           {error}
         </div>
       ) : (
@@ -23,11 +23,12 @@ export default function OutputBlock({ label, value, onChange, isLoading, error, 
           value={value}
           onChange={e => onChange?.(e.target.value)}
           rows={rows}
-          className={`w-full px-3 py-2.5 rounded-lg border text-sm font-mono leading-relaxed resize-y
-            transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30
+          className={`w-full px-4 py-3 rounded border text-sm leading-relaxed resize-y
+            transition-colors focus:outline-none focus:ring-1 focus:ring-lh-500/40
+            font-sans
             ${isLoading
-              ? 'border-blue-200 bg-blue-50/30 text-gray-700'
-              : 'border-gray-200 bg-white text-gray-800 hover:border-gray-300'
+              ? 'border-lh-800/50 bg-lh-950/20 text-gray-600'
+              : 'border-gray-200 bg-white text-gray-800 hover:border-lh-300/50 focus:border-lh-400/60'
             }`}
         />
       )}

@@ -110,7 +110,7 @@ RULES:
             placeholder="Paste the candidate's resume text here..."
             rows={8}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -125,7 +125,7 @@ RULES:
             placeholder="Job description will appear here from Stage 1..."
             rows={6}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -139,7 +139,7 @@ RULES:
             placeholder="Paste the HM's LinkedIn profile text..."
             rows={5}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -152,7 +152,7 @@ RULES:
             onChange={e => setInterviewFormat(e.target.value)}
             placeholder="e.g. behavioral, technical, case-based, panel..."
             className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -166,7 +166,7 @@ RULES:
             placeholder="e.g. HM values structured thinkers, previously rejected a candidate for being too tactical..."
             rows={3}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -180,7 +180,7 @@ RULES:
             placeholder="e.g. previous candidates were asked about multi-stakeholder alignment, team had concerns about scale..."
             rows={3}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -194,7 +194,7 @@ RULES:
             placeholder="Paste the company's about page text..."
             rows={4}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm leading-relaxed
-              resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+              resize-y focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
           />
         </div>
 
@@ -208,7 +208,7 @@ RULES:
               onChange={e => setCompExpectation(e.target.value)}
               placeholder="e.g. $230K base + equity"
               className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+                focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
             />
           </div>
           <div>
@@ -220,7 +220,7 @@ RULES:
               onChange={e => setLogistics(e.target.value)}
               placeholder="e.g. 3 days on-site, April start date firm"
               className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:border-gray-300"
+                focus:outline-none focus:ring-2 focus:ring-lh-500/30 hover:border-gray-300"
             />
           </div>
         </div>
@@ -228,8 +228,8 @@ RULES:
         <button
           onClick={handleGenerate}
           disabled={isLoading || !resume.trim() || !effectiveJD}
-          className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-            hover:bg-blue-700 active:bg-blue-800 transition-colors
+          className="px-5 py-2.5 rounded-lg bg-lh-600 text-white text-sm font-medium
+            hover:bg-lh-700 active:bg-lh-800 transition-colors
             disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Generating...' : 'Generate Interview Prep Email'}
