@@ -27,7 +27,12 @@ const DECISION_STYLES = {
   NO: 'bg-red-50 text-red-700 border-red-200',
 };
 
-function formatResultsAsText(rows) {
+function flattenBatches(batches) {
+  return batches.flat();
+}
+
+function formatResultsAsText(batches) {
+  const rows = flattenBatches(batches);
   if (!rows.length) return '';
   const header = 'DECISION | NAME | TITLE / COMPANY | REASON';
   const separator = '---------+------+-----------------+--------';
@@ -35,17 +40,26 @@ function formatResultsAsText(rows) {
   return [header, separator, ...dataRows].join('\n');
 }
 
+// Migrate legacy flat results array → batches format
+function normalizeSavedData(savedData) {
+  if (!savedData) return [];
+  if (Array.isArray(savedData.batches)) return savedData.batches;
+  // Legacy: flat results array — treat as a single batch
+  if (Array.isArray(savedData.results) && savedData.results.length) return [savedData.results];
+  return [];
+}
+
 export default function Stage3CandidateScreener({ jobDescription, savedData, onSave }) {
   const [candidateInput, setCandidateInput] = useState('');
-  const [results, setResults] = useState(savedData?.results || []);
+  const [batches, setBatches] = useState(() => normalizeSavedData(savedData));
   const { output, isLoading, error, generate } = useStreamingMessage();
 
-  useDebouncedSave(results, (val) => { if (val.length) onSave({ results: val }); });
+  const allRows = flattenBatches(batches);
+  useDebouncedSave(batches, (val) => { if (val.length) onSave({ batches: val }); });
 
   const handleScreen = async () => {
     if (!candidateInput.trim() || !jobDescription) return;
 
-    const accumulated = [];
     await generate(
       [
         {
@@ -75,11 +89,9 @@ Rules:
       {
         onDone: fullText => {
           const newRows = parseScreeningRows(fullText);
-          setResults(prev => {
-            const updated = [...prev, ...newRows];
-            accumulated.push(...newRows);
-            return updated;
-          });
+          if (newRows.length) {
+            setBatches(prev => [...prev, newRows]);
+          }
         },
       }
     );
@@ -87,14 +99,15 @@ Rules:
   };
 
   const handleClear = () => {
-    setResults([]);
+    setBatches([]);
+    onSave({ batches: [] });
   };
 
   return (
     <div className="max-w-4xl">
       <h1 className="text-2xl font-semibold text-gray-900 mb-1">Candidate Screener</h1>
       <p className="text-sm text-gray-500 mb-6">
-        Paste raw LinkedIn results (up to 25 per batch). Results accumulate across batches.
+        Paste raw LinkedIn results (up to 25 per batch). Each batch is visually separated.
         Claude rates each candidate YES / MAYBE / NO against the stored JD.
       </p>
 
@@ -143,14 +156,14 @@ Rules:
         </div>
       )}
 
-      {results.length > 0 && (
+      {batches.length > 0 && (
         <div className="mt-6 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-gray-700">
-              Results ({results.length} candidates)
+              {allRows.length} candidate{allRows.length !== 1 ? 's' : ''} across {batches.length} batch{batches.length !== 1 ? 'es' : ''}
             </span>
             <div className="flex items-center gap-2">
-              <CopyButton getText={() => formatResultsAsText(results)} />
+              <CopyButton getText={() => formatResultsAsText(batches)} />
               <button
                 onClick={handleClear}
                 className="px-3 py-1.5 text-sm rounded-md border border-gray-300 bg-white
@@ -165,32 +178,41 @@ Rules:
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide w-24">
-                    Decision
-                  </th>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Name
-                  </th>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Title / Company
-                  </th>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Reason
-                  </th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide w-24">Decision</th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Title / Company</th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Reason</th>
                 </tr>
               </thead>
               <tbody>
-                {results.map((row, i) => (
-                  <tr key={i} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
-                    <td className="px-4 py-3">
-                      <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold border ${DECISION_STYLES[row.decision] || 'bg-gray-50 text-gray-600 border-gray-200'}`}>
-                        {row.decision}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-medium text-gray-900">{row.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{row.titleCompany}</td>
-                    <td className="px-4 py-3 text-gray-700">{row.reason}</td>
-                  </tr>
+                {batches.map((batch, batchIndex) => (
+                  <>
+                    {batchIndex > 0 && (
+                      <tr key={`divider-${batchIndex}`}>
+                        <td colSpan={4} className="px-4 py-2 bg-slate-800 border-y border-slate-700">
+                          <span className="text-xs font-semibold text-slate-300 uppercase tracking-widest">
+                            Batch {batchIndex + 1} &mdash; {batch.length} candidate{batch.length !== 1 ? 's' : ''}
+                          </span>
+                        </td>
+                      </tr>
+                    )}
+                    {batch.map((row, i) => (
+                      <tr
+                        key={`${batchIndex}-${i}`}
+                        className={`border-b border-gray-100 last:border-0 hover:brightness-95 transition-all
+                          ${batchIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
+                      >
+                        <td className="px-4 py-3">
+                          <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold border ${DECISION_STYLES[row.decision] || 'bg-gray-50 text-gray-600 border-gray-200'}`}>
+                            {row.decision}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 font-medium text-gray-900">{row.name}</td>
+                        <td className="px-4 py-3 text-gray-600">{row.titleCompany}</td>
+                        <td className="px-4 py-3 text-gray-700">{row.reason}</td>
+                      </tr>
+                    ))}
+                  </>
                 ))}
               </tbody>
             </table>
@@ -199,8 +221,8 @@ Rules:
       )}
 
       <RefinementBox
-        currentOutput={results.length ? formatResultsAsText(results) : ''}
-        onRefined={text => setResults(parseScreeningRows(text))}
+        currentOutput={batches.length ? formatResultsAsText(batches) : ''}
+        onRefined={text => setBatches([parseScreeningRows(text)])}
       />
     </div>
   );
